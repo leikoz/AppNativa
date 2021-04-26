@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -134,9 +135,44 @@ public class Juego extends Activity {
 
     private void comprobar(int i, final ImageButton imgb){
         if(primero == null){
-            
+            primero = imgb;
+            primero.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            primero.setImageResource(imagenes[arrayDesordenado.get(i)]);
+            primero.setEnabled(false);
+            numeroPrimero = arrayDesordenado.get(i);
         }else{
-
+            bloqueo = true;
+            imgb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imgb.setImageResource(imagenes[arrayDesordenado.get(i)]);
+            imgb.setEnabled(false);
+            numeroSegundo = arrayDesordenado.get(i);
+            if(numeroPrimero == numeroSegundo){
+                primero = null;
+                bloqueo = false;
+                aciertos++;
+                puntuacion++;
+                textoPuntuacion.setText("puntuación: "+puntuacion);
+                if(aciertos == imagenes.length){
+                    Toast toast = Toast.makeText(getApplicationContext(),"Has ganado!!", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            }else{
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        primero.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        primero.setImageResource(fondo);
+                        primero.setEnabled(true);
+                        imgb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        imgb.setImageResource(fondo);
+                        imgb.setEnabled(true);
+                        bloqueo = false;
+                        primero = null;
+                        puntuacion--;
+                        textoPuntuacion.setText("puntuación: "+puntuacion);
+                    }
+                }, 1000);
+            }
         }
     }
 
